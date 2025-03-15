@@ -2,6 +2,7 @@ import os
 from pytubefix import YouTube
 import sys
 import getopt
+import re
 
 
 class Converter:
@@ -21,10 +22,7 @@ class Converter:
 
         if not self._with_video:
             origin = youtube.streams.filter(only_audio=True).order_by('bitrate').last().download(self._music_dir)
-            char_list = "\"/:|"
-            title = youtube.title
-            for char in char_list:
-                title = title.replace(char, '') 
+            title = re.sub(r'[^a-zA-Z0-9_\-\(\) ]+', '', youtube.title)
             print(title)
             mp3 = self._music_dir + "/" + title + ".mp3"
             cmd = 'ffmpeg -hide_banner -loglevel error -i "' + origin + '" "' + mp3 + '"'
